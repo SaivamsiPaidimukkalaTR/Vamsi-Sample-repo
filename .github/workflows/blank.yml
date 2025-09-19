@@ -85,4 +85,5 @@ jobs:
           BRANCH2="sfsafasfasf" 
           gh api --hostname "${GITHUB_SERVER_URL#https://}" \
           --method PATCH "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
-          -f name="$NAME" -v
+          -F name="$NAME" \
+          --verbose
