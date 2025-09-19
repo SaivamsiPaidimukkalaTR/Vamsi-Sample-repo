@@ -59,13 +59,23 @@ jobs:
         run: |
           gh api --hostname "${GITHUB_SERVER_URL#https://}" \
           "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" --jq '{id, name, event, repository: .repository.full_name}'
+      
       - name: Set run name
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         shell: bash
         run: |
-          HOST="${GITHUB_SERVER_URL:-https://github.com}"; HOST="${HOST#https://}" gh api --hostname "$HOST"
-          "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" --jq '{id,name,repo:.repository.full_name,event}' 
+          HOST="${GITHUB_SERVER_URL:-https://github.com}" \
+          HOST="${HOST#https://}" \
+          gh api --hostname "$HOST" \
+          "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+          --jq '{id,name,repo:.repository.full_name,event}' 
       - name: Patch run name 
         run: | 
-          HOST="${GITHUB_SERVER_URL:-https://github.com}"; HOST="${HOST#https://}" NAME="${GITHUB_REF_NAME} - ${GITHUB_RUN_NUMBER} - $(date +%F)" echo "Setting run name to: $NAME" gh api --hostname "$HOST" --method PATCH "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" -f name="$NAME" -v
+          HOST="${GITHUB_SERVER_URL:-https://github.com}" \
+          HOST="${HOST#https://}" \
+          NAME="${GITHUB_REF_NAME} - ${GITHUB_RUN_NUMBER} - $(date +%F)" \
+          echo "Setting run name to: $NAME" \
+          gh api --hostname "$HOST" \
+          --method PATCH "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+          -f name="$NAME" -v
