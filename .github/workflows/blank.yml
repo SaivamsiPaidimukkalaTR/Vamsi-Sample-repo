@@ -73,6 +73,7 @@ jobs:
       - name: Patch run name 
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        shell: bash
         run: | 
           HOST="${GITHUB_SERVER_URL:-https://github.com}" 
           HOST="${HOST#https://}" 
