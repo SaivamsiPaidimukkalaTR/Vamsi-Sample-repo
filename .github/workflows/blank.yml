@@ -71,8 +71,8 @@ jobs:
           --jq '{id,name,repo:.repository.full_name,event}' 
       - name: Patch run name 
         env:
-          GH_TOKEN: ${{ vars.TOKEN }}
-        shell: bash
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        
         run: | 
           HOST="${GITHUB_SERVER_URL:-https://github.com}" 
           HOST="${HOST#https://}" 
