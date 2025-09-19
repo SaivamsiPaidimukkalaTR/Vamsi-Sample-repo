@@ -1,9 +1,6 @@
 # File: .github/workflows/ntg-workflow.yml
 name: NTG Workflow
-
-run-name: > 
-  ${{ github.ref_name }}_${{ format('{0,date,yyyy-MM-dd}', now()) }} - ${{ github.run_number }} ${{ github.event_name == 'pull_request' && github.event.pull_request.title || github.event.head_commit && github.event.head_commit.message || github.ref_name }}
-
+run-name: ${{ github.ref_name }}_${{ env.RUN_DATE }} - ${{ github.run_number }} ${{ env.RUN_TITLE }}
 
 on:
   push:
