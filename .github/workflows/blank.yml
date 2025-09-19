@@ -66,7 +66,7 @@ jobs:
         shell: bash
         run: |
           HOST="${GITHUB_SERVER_URL:-https://github.com}" \
-          HOST="${HOST#https://}" \
+          #HOST="${HOST#https://}" \
           gh api --hostname "$HOST" \
           "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
           --jq '{id,name,repo:.repository.full_name,event}' 
