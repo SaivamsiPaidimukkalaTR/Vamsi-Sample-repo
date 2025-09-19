@@ -1,13 +1,7 @@
 
 # File: .github/workflows/ntg-workflow.yml
 name: NTG Workflow
-run-name: >
-  ${{ github.ref_name }} -
-  ${{ github.run_number }} -
-  ${{ (github.event.head_commit.timestamp ||
-        github.event.pull_request.updated_at ||
-        github.event.repository.updated_at)}} -
-  ${{ github.event.head_commit.message || github.event.pull_request.title || github.workflow }}
+
 on:
   push:
     branches: [main]
@@ -70,14 +64,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         shell: bash
         run: |
-          echo $GH_TOKEN
-          BRANCH="${{ steps.info.outputs.branch }}"
-          DATE="${{ steps.info.outputs.date }}"
-          TITLE="${{ steps.info.outputs.title }}"
-          COUNT="${{ steps.count.outputs.run_number }}"
-          NAME="${BRANCH}_${DATE} - ${COUNT} ${TITLE}"
-          echo "Setting run name: $NAME"
-          #gh api --hostname "${GITHUB_SERVER_URL#https://}" \
-          #--method PATCH \
-          #"repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
-          #-f name="$NAME"
+          HOST="${GITHUB_SERVER_URL:-https://github.com}"; HOST="${HOST#https://}" gh api --hostname "$HOST"
+          "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" --jq '{id,name,repo:.repository.full_name,event}' 
+      - name: Patch run name 
+        run: | 
+          HOST="${GITHUB_SERVER_URL:-https://github.com}"; HOST="${HOST#https://}" NAME="${GITHUB_REF_NAME} - ${GITHUB_RUN_NUMBER} - $(date +%F)" echo "Setting run name to: $NAME" gh api --hostname "$HOST" --method PATCH "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" -f name="$NAME" -v
