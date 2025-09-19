@@ -75,11 +75,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         shell: bash
         run: | 
-          BRANCH="${{ steps.info.outputs.branch }}"
-          DATE="${{ steps.info.outputs.date }}"
-          TITLE="${{ steps.info.outputs.title }}"
-          COUNT="${{ steps.count.outputs.run_number }}"
-          NAME="${BRANCH}_${DATE} - ${COUNT} ${TITLE}"
-           
-          gh api --hostname "${GITHUB_SERVER_URL#https://}" --method PATCH "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" -f name="$NAME" 
-          echo "Setting run name to: $NAME"
+          
+           gh api --hostname "${GITHUB_SERVER_URL#https://}" --method PATCH "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" -f name="NAME" 
+         
