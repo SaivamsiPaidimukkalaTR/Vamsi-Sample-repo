@@ -85,4 +85,4 @@ jobs:
           echo "Setting run name to: $NAME" 
           gh api --hostname "${GITHUB_SERVER_URL#https://}" \
           --method PATCH "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
-          -f name="$NAME" -v
+          -f name="$NAME" 
