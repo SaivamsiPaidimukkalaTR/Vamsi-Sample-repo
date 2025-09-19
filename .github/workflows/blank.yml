@@ -82,4 +82,4 @@ jobs:
           #-f name="$NAME"
           
           
-run-name: $NAME
+run-name: $RUNNAME
