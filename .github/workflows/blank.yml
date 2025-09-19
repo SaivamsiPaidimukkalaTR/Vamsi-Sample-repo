@@ -82,4 +82,4 @@ jobs:
           #-f name="$NAME"
           
           
-run-name: ${{ env.RUNNAME }}
+run-name: $NAME
