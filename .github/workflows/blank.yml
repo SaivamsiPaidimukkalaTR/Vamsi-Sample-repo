@@ -1,10 +1,7 @@
 # File: .github/workflows/ntg-workflow.yml
 name: NTG Workflow
-env: 
-  FALLBACK_TITLE: NTG Workflow
-
 run-name: > 
-  ${{ github.ref_name }}_${{ format('{0,date,yyyy-MM-dd}', github.event.head_commit.timestamp || github.event.pull_request.updated_at || github.event.repository.updated_at ) }} - ${{ github.run_number }} ${{ github.event.head_commit.message || github.event.pull_request.title || env.FALLBACK_TITLE }}
+  ${{ github.ref_name }}_${{ format('{0,date,yyyy-MM-dd}', github.event.head_commit.timestamp || github.event.pull_request.updated_at || github.event.repository.updated_at ) }} - ${{ github.run_number }} ${{ github.event.pull_request.title || github.event.head_commit.message || github.workflow }}
 on:
   push:
     branches: [main]
