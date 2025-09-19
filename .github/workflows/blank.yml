@@ -1,7 +1,7 @@
 
 # File: .github/workflows/ntg-workflow.yml
 name: NTG Workflow
-run-name: a
+
 on:
   push:
     branches: [main]
@@ -74,12 +74,13 @@ jobs:
         run: | 
           HOST="${GITHUB_SERVER_URL:-https://github.com}" \
           HOST="${HOST#https://}" \
-          BRANCH="${{ steps.info.outputs.branch }}"
-          DATE="${{ steps.info.outputs.date }}"
-          TITLE="${{ steps.info.outputs.title }}"
-          COUNT="${{ steps.count.outputs.run_number }}"
-          NAME="${BRANCH}_${DATE}_${COUNT}_${TITLE}"
           echo "Setting run name to: $NAME" \
+          BRANCH="${{ steps.info.outputs.branch }}" \
+          DATE="${{ steps.info.outputs.date }}" \
+          TITLE="${{ steps.info.outputs.title }}" \
+          COUNT="${{ steps.count.outputs.run_number }}" \
+          NAME="${BRANCH}_${DATE}_${COUNT}_${TITLE}" \
           gh api --hostname "${GITHUB_SERVER_URL#https://}" \
-          --method PATCH "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+          --method PATCH \
+          "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
           -f name="$NAME"
