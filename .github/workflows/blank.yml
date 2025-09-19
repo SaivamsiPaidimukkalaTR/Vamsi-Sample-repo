@@ -1,12 +1,11 @@
 # File: .github/workflows/ntg-workflow.yml
 name: NTG Workflow
-run-name: >
-  ${{ github.ref_name }} -
-  ${{ github.run_number }} -
-  ${{ (github.event.head_commit.timestamp ||
-        github.event.pull_request.updated_at ||
-        github.event.repository.updated_at)}} -
-  ${{ github.event.head_commit.message || github.event.pull_request.title || github.workflow }}
+env: 
+  RUN_TITLE: ${{ github.event.head_commit.message || github.event.pull_request.title || github.workflow }} 
+  RUN_DATE: ${{ (github.event.head_commit.timestamp || github.event.pull_request.updated_at || github.event.repository.updated_at)[:10] }} 
+  RUN_BRANCH: ${{ github.ref_name }}
+
+run-name: ${{ env.RUN_BRANCH }} - ${{ github.run_number }} - ${{ env.RUN_DATE }} - ${{ env.RUN_TITLE }}
 on:
   push:
     branches: [main]
