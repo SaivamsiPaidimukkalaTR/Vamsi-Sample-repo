@@ -71,16 +71,18 @@ jobs:
           "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
           --jq '{id,name,repo:.repository.full_name,event}' 
       - name: Patch run name 
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        shell: bash
         run: | 
-          HOST="${GITHUB_SERVER_URL:-https://github.com}" \
-          HOST="${HOST#https://}" \
-          BRANCH="${{ steps.info.outputs.branch }}" \
-          DATE="${{ steps.info.outputs.date }}" \
-          TITLE="${{ steps.info.outputs.title }}" \
-          COUNT="${{ steps.count.outputs.run_number }}" \
-          NAME="${BRANCH}_${DATE}_${COUNT}_${TITLE}" \
-          echo "Setting run name to: $NAME" \
+          HOST="${GITHUB_SERVER_URL:-https://github.com}" 
+          HOST="${HOST#https://}" 
+          BRANCH="${{ steps.info.outputs.branch }}"
+          DATE="${{ steps.info.outputs.date }}"
+          TITLE="${{ steps.info.outputs.title }}"
+          COUNT="${{ steps.count.outputs.run_number }}"
+          NAME="${BRANCH}_${DATE} - ${COUNT} ${TITLE}"
+          echo "Setting run name to: $NAME" 
           gh api --hostname "${GITHUB_SERVER_URL#https://}" \
-          --method PATCH \
-          "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+          --method PATCH "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
           -f name="$NAME"
