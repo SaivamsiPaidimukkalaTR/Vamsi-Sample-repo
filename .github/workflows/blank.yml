@@ -82,7 +82,7 @@ jobs:
           TITLE="${{ steps.info.outputs.title }}"
           COUNT="${{ steps.count.outputs.run_number }}"
           NAME="${BRANCH}_${DATE} - ${COUNT} ${TITLE}"
-          echo "Setting run name to: $NAME" \
+          echo "Setting run name to: $NAME" 
           gh api --hostname "${GITHUB_SERVER_URL#https://}" \
           --method PATCH "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
           -f name="$NAME" -v
