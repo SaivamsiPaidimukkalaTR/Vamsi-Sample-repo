@@ -1,0 +1,72 @@
+name: Sample_Workflow
+run-name: >
+  ${{ github.ref_name }} -
+  ${{ github.run_number }} -
+  $(date +%Y-%m-%dT%H_%M_%S)
+on:
+  push:
+    branches: [main]
+  # pull_request:  # Uncomment if you also want PR runs
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  set-run-name:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Gather run meta
+        id: info
+        shell: bash
+        run: |
+          echo "branch=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          echo "date=$(date +%F)" >> "$GITHUB_OUTPUT"
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            # PR title (single line)
+            printf 'title=%s\n' "${{ github.event.pull_request.title }}" | tr '\n' ' ' >> "$GITHUB_OUTPUT"
+          else
+            # Commit message (single line)
+            printf 'title=%s\n' "${{ github.event.head_commit.message }}" | tr '\n' ' ' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Get workflow_id
+        id: wf
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        shell: bash
+        run: |
+          wid=$(gh api "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" --jq .workflow_id)
+          echo "id=$wid" >> "$GITHUB_OUTPUT"
+          echo $GH_TOKEN
+          
+      - name: Count today’s runs for this branch
+        id: count
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        shell: bash
+        run: |
+          DATE="${{ steps.info.outputs.date }}"
+          BRANCH="${{ steps.info.outputs.branch }}"
+          WID="${{ steps.wf.outputs.id }}"
+          COUNT=$(gh api "repos/${{ github.repository }}/actions/workflows/$WID/runs?branch=$BRANCH&per_page=100" \
+            --jq "[.workflow_runs[] | select(.created_at | startswith(\"$DATE\"))] | length")
+          echo "run_number=$((COUNT + 1))" >> "$GITHUB_OUTPUT"
+          echo $GH_TOKEN
+      
+      - name: Set run name
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        shell: bash
+        run: |
+          echo $GH_TOKEN
+          BRANCH="${{ steps.info.outputs.branch }}"
+          DATE="${{ steps.info.outputs.date }}"
+          TITLE="${{ steps.info.outputs.title }}"
+          COUNT="${{ steps.count.outputs.run_number }}"
+          NAME="${BRANCH}_${DATE} - ${COUNT} ${TITLE}"
+          echo "Setting run name: $NAME"
+          gh api --hostname "${GITHUB_SERVER_URL#https://}" \
+          --method PATCH \
+          "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+          -f name="$NAME"
