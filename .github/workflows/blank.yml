@@ -77,6 +77,6 @@ jobs:
           NAME="${BRANCH}_${DATE} - ${COUNT} ${TITLE}"
           echo "Setting run name: $NAME"
           #gh api --hostname "${GITHUB_SERVER_URL#https://}" \
-          #--method PATCH \
-          #"repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
-          #-f name="$NAME"
+          --method PATCH \
+          "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+          -f name="$NAME"
