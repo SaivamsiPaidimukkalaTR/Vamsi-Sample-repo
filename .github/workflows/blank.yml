@@ -56,14 +56,7 @@ jobs:
             --jq "[.workflow_runs[] | select(.created_at | startswith(\"$DATE\"))] | length")
           echo "run_number=$((COUNT + 1))" >> "$GITHUB_OUTPUT"
           echo $GH_TOKEN
-      - name: Cgacfxaxfha
-    
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        shell: bash
-        run: |
-          gh api --hostname "${GITHUB_SERVER_URL#https://}" \
-          "repos/${{ github.repository }}/actions/runs/${{ github.run_id }}" --jq '{id, name, event, repository: .repository.full_name}'
+      
       - name: Set run name
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
