@@ -10,6 +10,7 @@ on:
   push:
     branches: [main]
   # pull_request:  # Uncomment if you also want PR runs
+  workflow_dispatch:
 
 permissions:
   actions: write
