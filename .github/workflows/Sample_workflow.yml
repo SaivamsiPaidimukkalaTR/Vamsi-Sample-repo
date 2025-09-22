@@ -2,7 +2,7 @@ name: Sample_Workflow
 run-name: >
   ${{ github.ref_name }} -
   ${{ github.run_number }} -
-  $(date +%Y-%m-%dT%H_%M_%S)
+  "$(date +%Y-%m-%dT%H_%M_%S)"
 on:
   push:
     branches: [main]
